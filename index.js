@@ -1,24 +1,18 @@
-import express, { application, json } from 'express';
-import { diakok } from './adatok.js';
+import { config } from "./dbconfig.js";
+import express, { request } from "express";
+import mysql from "mysql";
 
 const app = express();
 app.use(express.json());
+const db=mysql.createConnection(config)
+
+app.listen(5000,() => console.log('a szerver hallgatózik az 5000-es porton'));
 
 app.get('/',(request, response) => {
-    response.send(diakok)
-})
-app.get('/id',(request, response) => {
-    const {id} = request.params
-    const filteredArr = diakok.filter(obj=>obj.id==id)
-    response.send(filteredArr)
-})
-app.post('/',(request, response) => {
-    const {id,nev,osz} = request.body
-    diakok.push({id:id,nev:nev,osz:osz})
-    response.send(diakok)
-})
-app.get('*',(request, response) => {
-    response.status(404).send('nincs oldal')
-})
-
-app.listen(5000,() => console.log('Szerver listening on port 5000'))
+    db.query('SELECT id,author FROM books group by author order by author',(err,result)=>{
+            if (err)
+                console.log(err)
+            else
+                response.send(result)
+        })
+    });
