@@ -13,6 +13,40 @@ app.get('/',(request, response) => {
             if (err)
                 console.log(err)
             else
-                response.send(result)
+              response.send(result)
         })
     });
+
+app.get('szerzo/:author',(request, response) => {
+    const {author} = request.params
+
+    db.query('SELECT title FROM  `books` WHERE author=? ORDER BY title',[author],(err,result)=>{
+            if (err)
+                console.log(err)
+            else
+                response.send(result)
+        })
+    })
+
+app.get('/categ/:category/year/:year',(request, response) => {
+    const{category,year} = request.params
+    
+    db.query('SELECT author,title,year FROM books WHERE year>=? and category=?',[year,category],(err,result)=>{
+        if (err)
+            console.log(err)
+        else
+            response.send(result)
+    })
+    })
+
+
+app.get('/id/:id',(request, response) => {
+    const {id} = request.params
+    
+    db.query('SELECT author,title,year,category FROM books WHERE id=? ORDER bY title',[id],(err,result)=>{
+            if (err)
+                console.log(err)
+            else
+                response.send(result)
+        })
+        })
